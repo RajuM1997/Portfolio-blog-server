@@ -8,6 +8,8 @@ const createBlog = async (
   payload: Prisma.PostCreateInput,
   decoded: JwtPayload
 ): Promise<Post> => {
+  console.log(decoded);
+
   const post = await prisma.post.create({
     data: {
       ...payload,
