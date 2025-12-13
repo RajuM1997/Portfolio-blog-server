@@ -53,6 +53,7 @@ export const checkAuth =
           "You are not permitted to view this route!!"
         );
       }
+
       req.user = verifiedToken;
       next();
     } catch (error) {

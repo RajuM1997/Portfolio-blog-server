@@ -77,7 +77,8 @@ const getBlogById = catchAsync(
 const deleteBlogById = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
-    await BlogService.deleteBlogById(Number(id));
+    const decoded = req.user;
+    await BlogService.deleteBlogById(Number(id), decoded as JwtPayload);
     sendResponse(res, {
       success: true,
       statusCode: httpStatusCode.OK,

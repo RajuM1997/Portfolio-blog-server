@@ -27,6 +27,19 @@ const updateBlog = async (
   if (!decoded.userId) {
     throw new AppError(httpStatusCode.UNAUTHORIZED, "User Not Found");
   }
+  const blog = await prisma.post.findUnique({
+    where: {
+      id,
+    },
+  });
+
+  if (blog?.authorId !== decoded.userId && decoded.role !== "ADMIN") {
+    throw new AppError(
+      httpStatusCode.UNAUTHORIZED,
+      "You do not have permission to edit this blog post."
+    );
+  }
+
   const updatedBlog = await prisma.post.update({
     where: {
       id,
@@ -42,11 +55,19 @@ const getAllBlog = async () => {
 };
 
 const getMyBlogs = async (decoded: JwtPayload) => {
+  if (!decoded.userId) {
+    throw new AppError(
+      httpStatusCode.UNAUTHORIZED,
+      "You do not have permission to view this route."
+    );
+  }
+
   const blogs = await prisma.post.findMany({
     where: {
       authorId: Number(decoded.userId),
     },
   });
+
   return blogs;
 };
 
@@ -55,11 +76,34 @@ const getBlogById = async (id: number) => {
     where: {
       id,
     },
+    include: {
+      author: {
+        select: {
+          name: true,
+          email: true,
+          picture: true,
+        },
+      },
+    },
   });
   return blog;
 };
 
-const deleteBlogById = async (id: number) => {
+const deleteBlogById = async (id: number, decoded: JwtPayload) => {
+  const blog = await prisma.post.findUnique({
+    where: {
+      id,
+    },
+  });
+  console.log(blog);
+
+  if (blog?.authorId !== decoded.userId && decoded.role !== "ADMIN") {
+    throw new AppError(
+      httpStatusCode.UNAUTHORIZED,
+      "You do not have permission to delete this blog post."
+    );
+  }
+
   await prisma.post.delete({
     where: {
       id,
