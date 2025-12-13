@@ -5,6 +5,11 @@ import { Role } from "../user/user.interface";
 
 const router = Router();
 router.get("/", ProjectController.getAllProject);
+router.get(
+  "/my-projects",
+  checkAuth(...Object.values(Role)),
+  ProjectController.getAllProject
+);
 router.get("/:id", ProjectController.getProjectById);
 router.post(
   "/",

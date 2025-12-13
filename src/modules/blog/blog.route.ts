@@ -17,7 +17,11 @@ router.get(
   BlogController.getBlogById
 );
 router.post("/", checkAuth(...Object.values(Role)), BlogController.createBlog);
-router.patch("/:id", BlogController.updateBlog);
+router.patch(
+  "/:id",
+  checkAuth(...Object.values(Role)),
+  BlogController.updateBlog
+);
 router.delete(
   "/:id",
   checkAuth(...Object.values(Role)),

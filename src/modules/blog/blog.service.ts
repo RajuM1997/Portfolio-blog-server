@@ -95,7 +95,6 @@ const deleteBlogById = async (id: number, decoded: JwtPayload) => {
       id,
     },
   });
-  console.log(blog);
 
   if (blog?.authorId !== decoded.userId && decoded.role !== "ADMIN") {
     throw new AppError(

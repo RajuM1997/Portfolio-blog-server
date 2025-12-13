@@ -7,7 +7,7 @@ const router = Router();
 
 router.get("/", checkAuth("ADMIN"), UserController.getAllUser);
 router.get("/me", checkAuth(...Object.values(Role)), UserController.getMe);
-router.post("/", UserController.createUser);
+router.post("/", checkAuth(...Object.values(Role)), UserController.createUser);
 router.patch(
   "/:id",
   checkAuth(...Object.values(Role)),

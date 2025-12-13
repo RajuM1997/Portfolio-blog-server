@@ -27,6 +27,7 @@ model User {
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt
   posts      Post[]
+  projects   Project[]
 }
 
 model Post {
@@ -46,12 +47,14 @@ model Post {
 model Project {
   id            Int      @id @default(autoincrement())
   project_name  String
-  thumbnail     String?
+  thumbnail     String
   project_links Json
   live_link     String
   description   String
   features      String[]
   technology    String[]
+  authorId      Int
+  author        User     @relation(fields: [authorId], references: [id])
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 }

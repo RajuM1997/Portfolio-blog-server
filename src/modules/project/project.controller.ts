@@ -3,11 +3,16 @@ import { NextFunction, Request, Response } from "express";
 import { catchAsync } from "../../utils/catchAsync";
 import { ProjectService } from "./project.service";
 import { sendResponse } from "../../utils/sendResponse";
+import { JwtPayload } from "jsonwebtoken";
 
 const createProject = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const body = req.body;
-    const project = await ProjectService.createProject(body);
+    const decoded = req.user;
+    const project = await ProjectService.createProject(
+      body,
+      decoded as JwtPayload
+    );
     sendResponse(res, {
       success: true,
       statusCode: httpStatusCode.CREATED,
@@ -21,7 +26,12 @@ const updateProject = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const body = req.body;
     const id = req.params.id;
-    const project = await ProjectService.updateProject(body, Number(id));
+    const decoded = req.user;
+    const project = await ProjectService.updateProject(
+      body,
+      Number(id),
+      decoded as JwtPayload
+    );
     sendResponse(res, {
       success: true,
       statusCode: httpStatusCode.OK,
@@ -43,6 +53,19 @@ const getAllProject = catchAsync(
   }
 );
 
+const getMyProject = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const decoded = req.user;
+    const projects = await ProjectService.getMyProject(decoded as JwtPayload);
+    sendResponse(res, {
+      success: true,
+      statusCode: httpStatusCode.OK,
+      message: "All My Project retrieve successfully",
+      data: projects,
+    });
+  }
+);
+
 const getProjectById = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
@@ -59,7 +82,8 @@ const getProjectById = catchAsync(
 const deleteProjectById = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const id = req.params.id;
-    await ProjectService.deleteProjectById(Number(id));
+    const decoded = req.user;
+    await ProjectService.deleteProjectById(Number(id), decoded as JwtPayload);
     sendResponse(res, {
       success: true,
       statusCode: httpStatusCode.OK,
@@ -75,4 +99,5 @@ export const ProjectController = {
   getAllProject,
   getProjectById,
   deleteProjectById,
+  getMyProject,
 };
