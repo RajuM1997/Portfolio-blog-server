@@ -10,7 +10,6 @@ const loginWithCredential = catchAsync(
     const body = req.body;
     const user = await AuthService.loginWithCredential(body);
     const userToken = createUserToken(user.user);
-
     setAuthCookies(res, { accessToken: userToken });
 
     sendResponse(res, {
