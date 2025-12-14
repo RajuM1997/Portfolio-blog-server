@@ -46,8 +46,12 @@ const updateProject = async (
   return updatedProject;
 };
 
-const getAllProject = async () => {
-  const projects = await prisma.project.findMany();
+const getAllProject = async (page: number, limit: number) => {
+  const skip = (page - 1) * limit;
+  const projects = await prisma.project.findMany({
+    skip: skip,
+    take: limit,
+  });
   return projects;
 };
 

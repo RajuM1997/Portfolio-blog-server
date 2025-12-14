@@ -43,7 +43,9 @@ const updateProject = catchAsync(
 
 const getAllProject = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    const projects = await ProjectService.getAllProject();
+    const page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) || 10;
+    const projects = await ProjectService.getAllProject(page, limit);
     sendResponse(res, {
       success: true,
       statusCode: httpStatusCode.OK,

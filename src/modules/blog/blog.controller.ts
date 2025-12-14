@@ -38,7 +38,9 @@ const updateBlog = catchAsync(
 
 const getAllBlog = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    const blogs = await BlogService.getAllBlog();
+    const page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) || 10;
+    const blogs = await BlogService.getAllBlog(page, limit);
     sendResponse(res, {
       success: true,
       statusCode: httpStatusCode.OK,

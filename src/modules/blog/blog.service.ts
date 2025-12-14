@@ -49,8 +49,13 @@ const updateBlog = async (
   return updatedBlog;
 };
 
-const getAllBlog = async () => {
-  const blogs = await prisma.post.findMany();
+const getAllBlog = async (page: number, limit: number) => {
+  const skip = (page - 1) * limit;
+
+  const blogs = await prisma.post.findMany({
+    skip: skip,
+    take: limit,
+  });
   return blogs;
 };
 
