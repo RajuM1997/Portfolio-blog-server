@@ -3,6 +3,8 @@ import cors from "cors";
 import express, { Request, Response } from "express";
 import { router } from "./routes";
 import cookieParser from "cookie-parser";
+import globalErrorHandler from "./middleware/globalErrorHandler";
+import { notFound } from "./middleware/notFound";
 
 const app = express();
 
@@ -15,7 +17,7 @@ app.use(
   cors({
     origin: ["http://localhost:3000", "https://raju-portfolio-five.vercel.app"],
     credentials: true,
-  })
+  }),
 );
 
 // Default route for testing
@@ -27,12 +29,7 @@ app.get("/", (req: Request, res: Response) => {
 
 app.use("/api/v1", router);
 
-// 404 Handler
-app.use((req, res, next) => {
-  res.status(404).json({
-    success: false,
-    message: "Route Not Found",
-  });
-});
+app.use(globalErrorHandler);
+app.use(notFound);
 
 export default app;
